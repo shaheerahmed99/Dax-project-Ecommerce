@@ -1,21 +1,18 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'src/auth/entities/user.entity';
-import { Category } from '../categories/entities/category.entity';
-import { Product } from '../products/entities/product.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST ||'localhost',
-      port: 5432,
-      username: process.env.DB_USER||'postgres',
-      password: process.env.DB_PASS||'12345',
-      database: process.env.DB_NAME||'dax-project',
-      entities: [User,Category, Product],
-      synchronize: true,
+      url: "postgres://neondb_owner:npg_i7aZCyJ4HsPh@ep-solitary-flower-a8h5b8fx-pooler.eastus2.azure.neon.tech/dax-ecommerce-db?sslmode=require",
+      autoLoadEntities: true,
+      synchronize: true, // Set to `false` in production
+      ssl: process.env.DATABASE_URL?.includes('neon.tech')
+        ? { rejectUnauthorized: false } // ✅ Enable SSL for NeonDB
+        : false,
     }),
   ],
 })
+
 export class PostgresDatabaseModule {}
